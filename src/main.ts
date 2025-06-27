@@ -12,6 +12,9 @@ import { InvalidFormExceptionFilter } from './filters/invalid.form.exception.fil
 import { AllExceptionsFilter } from './filters/all.exceptions.filter';
 import { WinstonModule } from 'nest-winston';
 import 'winston-daily-rotate-file';
+import * as dotenv from 'dotenv';
+
+dotenv.config();
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
