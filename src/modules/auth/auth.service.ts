@@ -13,6 +13,10 @@ export class AuthService {
   ) {}
 
   async register(dto: CreateUserDto) {
+    const userExists = await this.usersService.findByEmail(dto.email);
+    if (userExists) {
+      return 'User Already Registered';
+    }
     const user = await this.usersService.create(dto);
     return this.generateToken(user.id);
   }

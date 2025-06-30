@@ -2,8 +2,8 @@
 import * as request from 'supertest';
 import { Test } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
-import { AppModule } from '../../app/app.module';
-import { PrismaService } from '../../prisma/prisma.service';
+import { AppModule } from '../src/modules/app/app.module';
+import { PrismaService } from '../src/modules/prisma/prisma.service';
 
 describe('Versions (e2e)', () => {
   let app: INestApplication;
@@ -20,15 +20,21 @@ describe('Versions (e2e)', () => {
     await app.init();
 
     prisma = app.get(PrismaService);
-    await prisma.version.deleteMany();
-    await prisma.document.deleteMany();
-    await prisma.user.deleteMany();
 
-    await request(app.getHttpServer()).post('/auth/register').send({
-      email: 'version@example.com',
-      username: 'versioner',
-      password: 'password123',
-    });
+    // urutan aman dari FK constraint
+    await prisma.notification.deleteMany({});
+    await prisma.userDocumentAccess.deleteMany({});
+    await prisma.version.deleteMany({});
+    await prisma.document.deleteMany({});
+    await prisma.user.deleteMany({});
+
+    const register = await request(app.getHttpServer())
+      .post('/auth/register')
+      .send({
+        email: 'version@example.com',
+        username: 'versioner',
+        password: 'password123',
+      });
 
     const login = await request(app.getHttpServer())
       .post('/auth/login')

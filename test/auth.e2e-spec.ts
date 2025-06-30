@@ -2,8 +2,8 @@
 import * as request from 'supertest';
 import { Test } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
-import { AppModule } from '../../app/app.module';
-import { PrismaService } from '../../prisma/prisma.service';
+import { AppModule } from '../src/modules/app/app.module';
+import { PrismaService } from '../src/modules/prisma/prisma.service';
 
 describe('Auth (e2e)', () => {
   let app: INestApplication;
@@ -18,7 +18,7 @@ describe('Auth (e2e)', () => {
     await app.init();
 
     prisma = app.get(PrismaService);
-    await prisma.user.deleteMany(); // clean test users
+    await prisma.user.deleteMany({});
   });
 
   afterAll(async () => {
